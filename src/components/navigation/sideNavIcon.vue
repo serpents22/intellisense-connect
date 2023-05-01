@@ -41,7 +41,7 @@ svg {
 }
 .flying-text {
   @apply 
-    absolute w-auto py-2 px-8 ml-4 min-w-max left-12 rounded-md shadow-md
+    absolute w-auto py-2 px-8 ml-4 min-w-max left-12 rounded-md shadow-md z-50
     text-white bg-gray-900 
     text-xs font-bold 
     transition-all duration-200 scale-0 origin-left

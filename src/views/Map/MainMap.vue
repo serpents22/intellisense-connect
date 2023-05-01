@@ -14,6 +14,7 @@
     import sideNav from '@/components/navigation/sideNav.vue'
     import RealtimeMap from '@/views/Map/RealtimeMap.vue'
     import HeatMap from '@/views/Map/HeatMap.vue'
+    import DemoMap from '@/views/Map/DemoMap.vue'
     import { onMounted, ref} from 'vue'
 
     export default {
@@ -21,7 +22,8 @@
         RealtimeMap,
         HeatMap,
         Tab,
-        sideNav
+        sideNav,
+        DemoMap
     },
 
     setup() {
@@ -38,6 +40,10 @@
         {
           title: 'Route Tracking',
           value: 'HeatMap'
+        },
+        {
+          title: 'Demo Map',
+          value: 'DemoMap'
         }
       ]
  
@@ -68,7 +74,7 @@
   <style scoped>
 .tab-wrapper{
   @apply
-    absolute left-[80px] bottom-[20px] w-fit z-50
+    absolute left-[80px] bottom-[20px] w-fit z-10
 }
 .content {
   @apply w-full h-screen ml-[60px] mt-[80px]
