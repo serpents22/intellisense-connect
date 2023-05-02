@@ -27,7 +27,7 @@
     },
 
     setup() {
-      const selectedComponent = ref('RealtimeMap')
+      const selectedComponent = ref('DemoMap')
       const tabs = [
         {
           title: 'Crowd Zone',
@@ -59,7 +59,7 @@
       }
 
       onMounted(async() => {
-        var element = document.getElementById("Realtime Tracking");
+        var element = document.getElementById("Demo Map");
         element.classList.add("active");
       })
       
@@ -77,7 +77,7 @@
     absolute left-[80px] bottom-[20px] w-fit z-10
 }
 .content {
-  @apply w-full h-screen ml-[60px] mt-[80px]
+  @apply w-full h-screen pl-[60px] pt-[80px]
 } 
 
   </style>
