@@ -4,11 +4,7 @@
 - Go to your specified directory
 - Clone the code
 ```
-<<<<<<< HEAD
 git clone https://github.com/serpents22/intellisense-devicesnet-fe.git
-=======
-git clone https://github.com/serpents22/intellisense-devicesnet-fe.git
->>>>>>> f156016de123e601bb6353b1f930d7ef35b60a81
 ```
 - Open code in VSCODE
 ```
