@@ -52,7 +52,6 @@ docker rmi intellisense-devicesnet-fe:latest
 ### Create new Images and Run a Container
 execute this command inside code directory
 ```
-
 docker build -t intellisense-devicesnet .
 ```
 
