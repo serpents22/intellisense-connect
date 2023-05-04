@@ -42,37 +42,22 @@ npm run serve
 ### Remove Existing Container and Images
 this command below can be executed in any directory
 ```
-<<<<<<< HEAD
-docker rm -f intellisense-devicesnet
-```
-
-```
-docker rmi intellisense-devicesnet:latest
-=======
 docker rm -f intellisense-devicesnet-fe
 ```
 
 ```
 docker rmi intellisense-devicesnet-fe:latest
->>>>>>> f156016de123e601bb6353b1f930d7ef35b60a81
 ```
 
 ### Create new Images and Run a Container
 execute this command inside code directory
 ```
-<<<<<<< HEAD
+
 docker build -t intellisense-devicesnet .
 ```
 
 ```
 docker run -p 8080:80 -d --name intellisense-devicesnet intellisense-devicesnet
-=======
-docker build -t intellisense-devicesnet-fe .
-```
-
-```
-docker run -p 8080:80 -d --name intellisense-devicesnet-fe intellisense-devicesnet-fe
->>>>>>> f156016de123e601bb6353b1f930d7ef35b60a81
 ```
 
 
