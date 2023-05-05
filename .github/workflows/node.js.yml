@@ -37,6 +37,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         # Selecting all folders except "node_modules"
-        source: ".,!node_modules"
+        source: "dist/"
         # The path is based on the directory where the user logged into the server starts
-        target: "~/dev/frontend"
+        target: "/var/www/html"
