@@ -37,6 +37,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         # Selecting all folders except "node_modules"
-        source: "dist/css/,dist/favicon.ico,dist/img/,dist/index.html,dist/js"
+        source: "/dist/css/,/dist/favicon.ico,/dist/img/,/dist/index.html,/dist/js"
         # The path is based on the directory where the user logged into the server starts
         target: "/var/www/html"
