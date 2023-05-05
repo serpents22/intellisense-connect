@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -39,4 +39,4 @@ jobs:
         # Selecting all folders except "node_modules"
         source: ".,!node_modules"
         # The path is based on the directory where the user logged into the server starts
-        target: "~/app/gobarber-backend"
+        target: "~/dev/frontend"
