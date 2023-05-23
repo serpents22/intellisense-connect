@@ -1,63 +1,17 @@
 <template>
-<div class="device-info-wrapper flex flex-col sm:flex-row w-full h-fit gap-10 justify-between">
-  <div class="device-info bg-[#F7F7F7] rounded-lg w-full py-5 px-10 flex flex-col sm:flex-row gap-3 sm:justify-between">
-    <div class="field-wrapper flex flex-col gap-3 sm:gap-6">
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">Device Name:</p>
-        <p class="text-[#353535] text-base">{{ deviceData.name }}</p>
-      </div>
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">Device Type:</p>
-        <p class="text-[#353535] text-base">{{ deviceData.name }}</p>
-      </div>
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">IMEI Number:</p>
-        <p class="text-[#353535] text-base">{{ deviceData.imei }}</p>
-      </div>
-    </div>
-    <div class="field-wrapper flex flex-col gap-3 sm:gap-6">
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">Status:</p>
-        <div class="flex items-center gap-3">
-          <Indicator :status="deviceData.indicator"/>
-          <p class="text-[#353535] text-base">{{ deviceData.status }}</p>
-        </div>
-      </div>
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">IP Address:</p>
-        <p class="text-[#353535] text-base">{{ deviceData.ipAddress }}</p>
-      </div>
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">Port:</p>
-        <p class="text-[#353535] text-base">{{ deviceData.port }}</p>
-      </div>
-    </div>
-    <div class="field-wrapper flex flex-col gap-3 sm:gap-6">
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">SIM Number:</p>
-        <p class="text-[#353535] text-base">{{ deviceData.name }}</p>
-      </div>
-      <div class="text-wrapper flex flex-col gap-2 text-left">
-        <p class="text-[#353535]/60 text-sm">SIM Information:</p>
-        <p class="text-[#353535] text-base">{{ deviceData.name }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="device-notes bg-[#F7F7F7] rounded-lg h-[280px] w-[300px] sm:w-[480px] py-5 px-10">
-    <div class="text-wrapper flex flex-col gap-2 text-left">
-      <p class="text-[#353535]/60 text-sm">Notes:</p>
-      <p class="text-[#353535] text-base">{{ deviceData.name }}</p>
-    </div>
-  </div>
+<div class="device-info bg-[#F7F7F7] rounded-lg w-full py-8 px-10 grid grid-cols-2 sm:grid-cols-3 gap-y-10">
+  <div v-for="( value, key ) in formData" class="text-wrapper flex flex-col gap-2 text-left">
+    <p  class="text-[#353535]/60 text-sm">{{ key }}</p>
+    <p class="text-[#353535] text-base">{{ value }}</p>
+  </div>  
 </div>
 </template>
      
 <script setup>
 
-import Indicator from '@/components/Indicator.vue'
 import { useDevicesStore } from '@/stores/DevicesStore'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, ref } from 'vue'
 
   const props = defineProps({
     id: String
@@ -65,22 +19,15 @@ import { onBeforeMount } from 'vue';
   
   const devicesStore = useDevicesStore()
   const { deviceData } = storeToRefs(useDevicesStore())
-
+  const formData = ref()
+  
   onBeforeMount( async () => {
-    await devicesStore.loadDevice(props.id)
-    console.log(deviceData.value)
-      switch (deviceData.value.status) {
-        case 0:
-          deviceData.value.status = 'Offline'
-          deviceData.value.indicator = 0
-        break;
-        case 1:
-          deviceData.value.status = 'Online'
-          deviceData.value.indicator = 1
-        break;
-        default:
-          break;
-      }
+    await devicesStore.getDevice(props.id)
+    formData.value = deviceData.value.fields
+    formData.value.id = deviceData.value.id
+    formData.value.serial_number = deviceData.value.serial_number
+    formData.value.notes = deviceData.value.notes
+
   })
 
   

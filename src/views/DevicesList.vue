@@ -1,6 +1,5 @@
 <template>
   <div class="slider"></div>
-  <loading :loading="isLoading" />
   <impiantoAddModal 
     v-if="isShowAddModal" 
     @close="toggleAddModal" 

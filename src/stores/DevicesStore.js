@@ -1,135 +1,124 @@
 import { defineStore } from 'pinia'
 import devicesApi from '@/services/deviceAPI'
 import { ref } from 'vue'
-import dataAPI from '@/services/dataAPI'
-import { useDataStore } from './DataStore'
 
-export const useDevicesStore = defineStore('device', () => {
+export const useDevicesStore = defineStore('device', {
+  state: () => ({
 
-  const devicesList = ref([])
-  const deviceData = ref([])
-  const createDeviceIsLoading = ref()
-  const updateDeviceIsLoading = ref()
-  const isLoading = ref(false)
-  const status = ref({
-    message: null,
-    code: null,
-  })
-  // const dataStore = useDataStore()
+    devicesList : ref([]),
+    deviceData : ref({
+      fields: []
+    }),
+    isLoading: ref(false),
+    status: ref({
+      isError:null,
+      message: null,
+      code: null,
+    })
+  }),
 
-  const loadDevices = async () => {
-    isLoading.value = true
-    try {
-      const res = await devicesApi.getDevices()
-      console.log(res)
-      devicesList.value = res.data
-      isLoading.value = false
-    } catch (err) {
+  actions: {
+    async createDevice(deviceData) {
+      this.isLoading = true
+      try {
+        const res = await devicesApi.createDevice(deviceData)
+        this.isLoading = false        
+        this.status.message = 'Device Created'
+        this.status.code = res.data.status
+        this.status.isError = false
+        this.isLoading = false
+      } catch (err) {
         console.error(err)
-        isLoading.value = false
-      return err
-    } 
+        this.isLoading = false
+        this.status.isError = true
+        this.status.code = err.response.status
+        this.status.message = err.response.statusText
+        return err
+      } 
+    },
+    async deleteDevice(id) {
+      this.isLoading = true
+      try {
+        const res = await devicesApi.deleteDevice(id)
+        console.log(res)
+        this.isLoading = false        
+        this.status.message = 'Device Deleted'
+        this.status.code = res.data.status
+        this.status.isError = false
+        this.isLoading = false
+        console.log(this.status)
+      } catch (err) {
+        this.isLoading = false
+        this.status.isError = true
+        this.status.code = err.response.status
+        this.status.message = err.response.statusText
+        console.log(this.status)
+        return err
+      }
+    },
+    async getDevices() {
+      this.isLoading = true
+      try {
+        const res = await devicesApi.getDevices()
+        this.devicesList = res.data.data.types.map((data) => {
+          return {
+            id: data.id,
+            name: data.name,
+            field: data.fields.fields,
+            notes: data.notes
+          }
+        })
+        console.log(this.deviceTypes)
+        this.isLoading = false        
+        this.status.code = res.data.status
+      } catch (err) {
+        this.isLoading = false
+        this.status.message = err.response.data.error
+        this.status.code = err.response.data.status
+        return err
+      }
+    },
+    async getDevice(id) {
+      this.isLoading = true
+      try {
+        const res = await devicesApi.getDevice(id)
+        console.log(res)
+        this.deviceData = res.data.data.device
+        // this.deviceData = res.data.data.device.fields
+        // this.deviceData.id = res.data.data.device.id
+        // this.deviceData.serial_number = res.data.data.device.serial_number
+        // this.deviceData.notes = res.data.data.device.notes
+        console.log(this.deviceData)
+        this.isLoading = false        
+        this.status.code = res.data.status
+        console.log(this.status)
+      } catch (err) {
+        this.isLoading = false
+        // this.status.message = err.response.data.error
+        // this.status.code = err.response.data.status
+        return err
+      }
+    },
+    async updateDevice(id,deviceData) {
+      this.isLoading = true
+      try {
+        const res = await devicesApi.updateDevice(id,deviceData)
+        console.log(res)
+        this.isLoading = false        
+        this.status.message = 'Device Updated'
+        this.status.code = res.data.status
+        this.status.isError = false
+        this.isLoading = false
+        console.log(this.status)
+      } catch (err) {
+        this.isLoading = false
+        this.status.isError = true
+        this.status.code = err.response.status
+        this.status.message = err.response.statusText
+        console.log(this.status)
+        return err
+      }
+    },
   }
 
-  const loadDevice = async (id) => {
-    isLoading.value = true
-    try {
-      const res = await devicesApi.getDevice(id)
-      deviceData.value = res.data
-      isLoading.value = false
-    } catch (err) {
-      console.error(err)
-      isLoading.value = false
-      return err
-    } 
-  }
-
-  const createDevices = async (deviceData) => {
-    createDeviceIsLoading.value = true
-    try {
-      const res = await devicesApi.postDevices(deviceData)
-      console.log(res)
-      status.value.message = 'Device Created'
-      status.value.code = res.data.status
-      createDeviceIsLoading.value = false
-    } catch (err) {
-      console.error(err)
-      createDeviceIsLoading.value = false
-      status.value.message = err.response.data.error
-      status.value.code = err.response.data.status
-      return err
-    } 
-  }
-
-  const updateDevice = async (id,deviceData) => {
-    updateDeviceIsLoading.value = true
-    try {
-      const res = await devicesApi.updateDevice(id,deviceData)
-      console.log(res)
-      status.value.message = 'Device Updated'
-      status.value.code = res.data.status
-      updateDeviceIsLoading.value = false
-    } catch (err) {
-      console.error(err)
-      updateDeviceIsLoading.value = false
-      status.value.message = err.response.data.error
-      status.value.code = err.response.data.status
-      return err
-    } 
-  }
-
-  const deleteDevice = async (id) => {
-    isLoading.value = true
-    try {
-      const res = await devicesApi.deleteDevice(id)
-      status.value.message = 'Device Deleted'
-      status.value.code = res.data.status
-      isLoading.value = false
-      console.log(res)
-    } catch (err) {
-      console.error(err)
-      isLoading.value = false
-      return err
-    } 
-  }
-
-  const loadDeviceGeo = async (id) => {
-    loadDeviceGeoIsLoading.value = true
-    try {
-      const res = await devicesApi.getDeviceGeo(id)
-      loadDeviceGeoStatus.value.code = res.data.status
-      loadDeviceGeoIsLoading.value = false
-      deviceGeo.value = res.data.data.device.deviceGeos
-      console.log(res)
-    } catch (err) {
-      console.error(err)
-      loadDeviceGeoStatus.value.code = err.response.data.status
-      loadDeviceGeoStatus.value.message = 'device not exist'
-      loadDeviceGeoIsLoading.value = false
-      return err
-    }
-  }
-  
-  const postDeviceGeo = async (data) => {
-    postDeviceGeoIsLoading.value = true
-    try {
-      const res = await devicesApi.postDeviceGeo(data)
-      postDeviceGeoStatus.value.code = res.data.status
-      postDeviceGeoStatus.value.message = "Coordinate Updated"
-      postDeviceGeoStatus.value.isError = postDeviceGeoStatus.value.code === 'fail' ? true : false
-      postDeviceGeoIsLoading.value = false
-      console.log(res)
-    } catch (err) {
-      console.error(err)
-      postDeviceGeoStatus.value.code = err.response.data === undefined ? 'fail' : err.response.data.status
-      postDeviceGeoStatus.value.isError = postDeviceGeoStatus.value.code === 'fail' ? true : false
-      postDeviceGeoStatus.value.message = err.response.data === undefined ? err.message : String(err.response.data.error.errors[0].field + ',' + err.response.data.error.errors[0].message)
-      postDeviceGeoIsLoading.value = false
-      return err
-    }
-  }
-
-  return {
-    devicesList, isLoading, loadDevices, createDevices, deleteDevice, status, loadDevice, deviceData, createDeviceIsLoading,updateDeviceIsLoading, updateDevice
-  }
 })

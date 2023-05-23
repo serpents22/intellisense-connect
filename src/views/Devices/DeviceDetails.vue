@@ -1,26 +1,31 @@
 <template>
 <alert 
-  message ="test"
-  :modalActive="modalActive"
-  :isError="isError"
-  @close="closeNotification" />
+:message ="status.message"
+:modalActive="modalActive"
+:isError="status.isError"
+ @close="closeNotification" />
 <sideNav :isDevicesActive="true" />
 <div class="content">
   <div class="content-header">
-    <h1 class="title"> Device Information </h1>
+    <div class="flex gap-4 items-center">
+      <div class="button-wrapper">
+        <Button type="button" class="outlined__green" label="Back" @click="goBack" />
+      </div>
+      <h1 class="title"> Device Information </h1>
+    </div>
     <div class="button-wrapper">
       <Button type="button" class="filled__green" :label="editLabel" @click="editAction" />
     </div>
   </div>
   <component :is="selectedComponent" :id="deviceId" @updated="updated" />
-  <div class="table-wrap">
+  <!-- <div class="table-wrap">
     <EasyDataTable
     table-class-name="customize-table"
     :headers="header"
     :items="[deviceData]"
     theme-color="#1363df"        
     />
-  </div>
+  </div> -->
 </div>
 </template> 
      
@@ -32,6 +37,7 @@ import Button from '@/components/button/BaseButton.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import { useDevicesStore } from '@/stores/DevicesStore'
 import { storeToRefs } from 'pinia'
+import router from '@/router'
 import { onBeforeMount, ref } from 'vue';
 
   export default {
@@ -42,36 +48,10 @@ import { onBeforeMount, ref } from 'vue';
 
     setup(props) {
       const deviceId = props.id
-      const header = [
-        { text: "", value: "indicator", width: 40},
-        { text: "IMEI", value: "imei" },
-        { text: "Device Name", value: "name", sortable: true },
-        { text: "Status", value: "status", sortable: true },
-        { text: "IP Address", value: "ipAddress", sortable: true },
-        { text: "Port", value: "port", sortable: true },
-        { text: "Last Handshake", value: "lastHandshake", sortable: true },
-        { text: "", value: "operation", width: 100 },
-      ]
-
-      const devicesStore = useDevicesStore()
-      const { deviceData,status, isLoading, } = storeToRefs(useDevicesStore())
       const selectedComponent = ref('DeviceInfo')
+      const { deviceData, status } = storeToRefs(useDevicesStore())
       
       onBeforeMount( async () => {
-        await devicesStore.loadDevice(props.id)
-        console.log(deviceData.value)
-          switch (deviceData.value.status) {
-            case 0:
-              deviceData.value.status = 'Offline'
-              deviceData.value.indicator = 0
-            break;
-            case 1:
-              deviceData.value.status = 'Online'
-              deviceData.value.indicator = 1
-            break;
-            default:
-              break;
-          }
       })
 
       const editLabel = ref('Edit Information')
@@ -129,8 +109,11 @@ import { onBeforeMount, ref } from 'vue';
       const closeNotification = () => {
         modalActive.value = false
       }
+      const goBack = () => {
+        router.go(-1);
+      }
       return {
-        selectedComponent, devicesStore, deviceData, deviceId, header, editAction, editLabel, updated, modalActive, isError
+        selectedComponent, deviceData, deviceId, editAction, editLabel, updated, modalActive, isError, goBack, closeNotification, status
       }
     }
   }
@@ -139,7 +122,9 @@ import { onBeforeMount, ref } from 'vue';
     
   <style scoped>
 .content {
-  @apply w-full h-fit px-5 py-[32px] ml-[60px] pt-[46px]
+  @apply 
+    w-full h-fit ml-[60px] mt-[80px]
+    p-[32px] flex flex-col gap-4
 }
   .title {
     @apply

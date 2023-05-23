@@ -4,12 +4,12 @@
       <div class="device-container">
         <h1 class="title"> Devices Category </h1>
         <div class="card-wrapper">
-          <div v-for="device in devicesCategory" :key="device.id" class="card" @click="router.push({name: device.path})">
+          <div v-for="device in deviceTypeStore.deviceTypes" :key="device.id" class="card" @click="router.push({name: 'DevicesList', params: {id: device.id}})">
             <div class="flex items-center gap-4">
-              <img class="w-[40px]" :src=device.imageSrc alt="SVG Image">
-              <h1 class="font-bold text-2xl">{{device.title}}</h1>
+              <!-- <img class="w-[40px]" :src=device.imageSrc alt="SVG Image"> -->
+              <h1 class="font-bold text-2xl">{{device.name}}</h1>
             </div>
-            <p class="font-light">{{device.desc}}</p>
+            <p class="font-light">{{device.notes}}</p>
           </div>
         </div>
       </div> 
@@ -20,31 +20,39 @@
 <script setup>
   import sideNav from '@/components/navigation/sideNav.vue'
   import { onMounted, ref} from 'vue'
+  import { useDeviceTypeStore } from '@/stores/DeviceTypeStore'
   import router from '@/router';
-  var devicesCategory = [
-    {
-      id: 0,
-      title: 'Smart Gate',
-      desc: 'Ticketing and Access Controller devices',
-      name: 'smartGate',
-      imageSrc: require('../../assets/icon/gate-icon.svg'),
-      path: 'GateList'
-    },
-    {
-      id: 1, 
-      title: 'Smart Band', 
-      desc: 'Visitor positioning and tagging devices', 
-      name: 'smartBand', 
-      imageSrc: require('../../assets/icon/beacon-icon.svg'),
-      path: 'BLEList'
-    }
-    ]
+ 
+  const deviceTypeStore = useDeviceTypeStore()
+
+  onMounted( async () => {
+    await deviceTypeStore.getDeviceTypes()
+  })
+
+  // var devicesCategory = [
+  //   {
+  //     id: 0,
+  //     title: 'Smart Gate',
+  //     desc: 'Ticketing and Access Controller devices',
+  //     name: 'smartGate',
+  //     imageSrc: require('../../assets/icon/gate-icon.svg'),
+  //     path: 'GateList'
+  //   },
+  //   {
+  //     id: 1, 
+  //     title: 'Smart Band', 
+  //     desc: 'Visitor positioning and tagging devices', 
+  //     name: 'smartBand', 
+  //     imageSrc: require('../../assets/icon/beacon-icon.svg'),
+  //     path: 'BLEList'
+  //   }
+  //   ]
 
 </script>
   
   <style scoped>
 .content {
-  @apply w-full h-fit ml-[60px] mt-[60px]
+  @apply w-full h-fit ml-[60px] mt-[80px]
 } 
 .title {
   @apply

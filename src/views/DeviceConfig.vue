@@ -1,5 +1,4 @@
 <template>
-  <loading :loading="isLoading" />
   <sidebar 
     :backOn="true" 
     :noSocial="true" 

@@ -3,7 +3,7 @@
     <alert 
     :message ="status.message"
     :modalActive="modalActive"
-    :isError="isError"
+    :isError="status.isError"
     @close="closeNotification" />
     <transition name="fade">
       <div class="modal" v-show="isOpen">
@@ -13,8 +13,14 @@
               <div class="flex flex-col gap-4">
                 <h1 class="text-lg">Please verify the device before deleting it</h1>
                 <div class="flex flex-col gap-2">
-                  <h1 class="font-semibold">NAME: {{ props.deviceInfo.name }}</h1>
-                  <h1 class="font-semibold">IMEI: {{ props.deviceInfo.imei }}</h1>
+                  <div class="flex m-auto gap-2">
+                    <h1 >Name:</h1>
+                    <h1 class="font-semibold">{{ props.deviceInfo.Name }}</h1>
+                  </div>
+                  <div class="flex m-auto gap-2">
+                    <h1>Serial Number:</h1>
+                    <h1 class="font-semibold">{{ props.deviceInfo.serial_number }}</h1>
+                  </div>
                 </div>
               </div>
               <div class="button-wrapper">
@@ -33,49 +39,43 @@
 <script setup>
 import BaseButton from '../button/BaseButton.vue'
 import { useDevicesStore } from '@/stores/DevicesStore'
+import { useDeviceTypeStore } from '@/stores/DeviceTypeStore'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
   const props = defineProps({
     isOpen: Boolean,
+    id: String,
     deviceInfo: Object
   })
-  const isError = ref(false)
   const modalActive = ref(false)
+  const deviceTypeStore = useDeviceTypeStore()
   const devicesStore = useDevicesStore()
   const { status, isLoading } = storeToRefs(useDevicesStore())
   const delLabel = ref('DELETE')
   const delButtonClick = ref(0)
-  const delay = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
-  const onSubmit = async (id) => {
+  const onSubmit = async () => {
     delButtonClick.value = ++delButtonClick.value
     if (delButtonClick.value == 1) {
       delLabel.value = 'sure to remove this device?'
     }
 
     if (delButtonClick.value == 2) {
-      await devicesStore.deleteDevice(id)
+      await devicesStore.deleteDevice(props.deviceInfo.id)
       modalActive.value = true
- 
-      if (status.value.code == 'fail') {
-        isError.value = true
-        setTimeout(closeNotification, 3000)
-      } else {
-        isError.value = false
-        setTimeout(closeNotification, 3000)
-      }
+      setTimeout(closeNotification, 3000)
       resetButton()
       closeModal()
-      delay(300)
-      devicesList.value = deviceStore.loadDevices()
+      deviceTypeStore.getDeviceType(props.id)
     }
   }
 
   const closeNotification = () => {
     modalActive.value = false
   }
+
   // Define custom events
   const emits = defineEmits(['close'])
   

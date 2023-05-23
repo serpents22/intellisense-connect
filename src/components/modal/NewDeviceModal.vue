@@ -1,9 +1,9 @@
 <template>
   <div>
   <alert 
-  :message ="status.message"
+    :message ="status.message"
     :modalActive="modalActive"
-    :isError="isError"
+    :isError="status.isError"
      @close="closeNotification" />
      <transition name="fade">
        <div class="modal" v-show="isOpen">
@@ -11,13 +11,10 @@
           <div class="modal-inner" v-show="isOpen" ref="target">
             <div class="modal-content">
             <h1 class="title">{{title}}</h1>
-            <VeeForm :validation-schema="schema" v-slot="{ handleSubmit }" as="div" ref="form" >
+            <VeeForm  v-slot="{ handleSubmit }" as="div" ref="form" >
               <form  @submit="handleSubmit($event, onSubmit)" class="form-wrapper" >
-                <BaseInput name="deviceName" type="text" placeholder="What would you like to call this device" class="outlined" label="Device Name"/>
-                <BaseInput name="deviceType" type="text" placeholder="Categorize your device" class="outlined" label="Device Type"/>
-                <BaseInput name="imeiNumber" type="text" placeholder="Enter your device IMEI here" class="outlined" label="IMEI Number"/>
-                <BaseInput name="simNumber" type="number" placeholder="Enter your SIM number here" class="outlined" label="SIM Number"/>
-                <BaseInput name="simInfo" type="link" placeholder="Enter your SIM information here" class="outlined" label="SIM Information"/>
+                <BaseInput name="serial_number" type="link" placeholder="Serial Number" class="outlined" label="Serial Number" required/>
+                <BaseInput v-for="field in fields" :name="field.value" type="link" :placeholder="field.text" class="outlined" :label="field.text" required/>
                 <TextArea name="notes" placeholder="Write notes for this device" class="outlined" label="Notes"></TextArea>
                 <div class="flex justify-between gap-10">
                   <BaseButton type="button" class="filled__softblue" :label="cancelLabel" @click="cancelForm"/>
@@ -39,50 +36,60 @@ import BaseInput from '@/components/input/BaseInput.vue'
 import TextArea from '@/components/input/TextArea.vue'
 import BaseButton from '../button/BaseButton.vue'
 import { Form as VeeForm } from 'vee-validate'
-import { addDeviceSchema } from '@/composable/devicesSchema'
+import { useDeviceTypeStore } from '@/stores/DeviceTypeStore'
 import { useDevicesStore } from '@/stores/DevicesStore'
-import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { onClickOutside } from '@vueuse/core'
- 
+import { storeToRefs } from 'pinia'
+
+
   const props = defineProps({
       isOpen: Boolean,
+      id: String,
       title: String
   })
-  const schema = addDeviceSchema  
-  const isError = ref(false)
+
+  const deviceTypeStore = useDeviceTypeStore()
+  const deviceStore = useDevicesStore()
+  const { status, isLoading} = storeToRefs(useDevicesStore())
+  const fields = ref([])
+
   const modalActive = ref(false)
-  const devicesStore = useDevicesStore()
-  const { status, isLoading } = storeToRefs(useDevicesStore())
+
   const cancelLabel = ref('CANCEL')
   const registerLabel = ref('REGISTER')
   const regButtonClick = ref(0)
   const cancelButtonClick = ref(0)
-  const delay = (time) => new Promise((resolve) => setTimeout(resolve, time))
+
+  onMounted(async() => {
+    await deviceTypeStore.getDeviceType(props.id)
+    fields.value = deviceTypeStore.deviceType.payload
+  })
 
   const onSubmit = async (values, { resetForm }) => {
+    const deviceData = ref({})
+    deviceData.value.type_id = props.id
+    deviceData.value.serial_number = values.serial_number 
+    deviceData.value.notes = values.notes
+    deviceData.value.fields = values
+    delete deviceData.value.fields.serial_number
+    delete deviceData.value.fields.notes
+
     regButtonClick.value = ++regButtonClick.value
     if (regButtonClick.value == 1) {
       registerLabel.value = 'the data entered is correct?'
     }
 
     if (regButtonClick.value == 2) {
-      await devicesStore.createDevices(values)
+      await deviceStore.createDevice(deviceData.value)
       modalActive.value = true
-
-      if (status.value.code == 'fail') {
-        isError.value = true
-        setTimeout(closeNotification, 3000)
-      } else {
-        isError.value = false
-        setTimeout(closeNotification, 3000)
+      if (!status.value.isError) {
         resetForm()
       }
+      setTimeout(closeNotification, 3000)
       registerLabel.value = 'REGISTER'
       regButtonClick.value = 0
-      delay(300)
-      devicesList.value = deviceStore.loadDevices()
-
+      deviceTypeStore.getDeviceType(props.id)
     }
   }
 

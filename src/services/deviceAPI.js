@@ -1,9 +1,13 @@
-import axios from "axios";
 import apiClient from "./API";
 
 
 
 export default {
+  
+  createDevice(data) {
+    return apiClient.post('devices', data)
+  },
+
   getDevices() {
     return apiClient.get('devices')
   },
@@ -12,15 +16,12 @@ export default {
     return apiClient.get(`devices/${id}`)
   },
 
-  postDevices(data) {
-    return apiClient.post('device', data)
-  },
   updateDevice(id,data) {
-    return apiClient.put(`device/${id}`, data)
+    return apiClient.put(`devices/${id}`, data)
   },
 
   deleteDevice(id) {
-    return apiClient.delete(`device/${id}`)
+    return apiClient.delete(`devices/${id}`)
   },
 
 }
