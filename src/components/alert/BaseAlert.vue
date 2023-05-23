@@ -34,8 +34,8 @@ export default {
 <style scoped>
 /*base design*/
 .message-modal { 
-  @apply  px-4 py-4 top-6 right-6 gap-5 rounded flex fixed items-end
-        text-[#3a3a3e] text-base 
+  @apply  px-4 py-4 bottom-6 right-6 gap-5 rounded flex fixed items-end
+        text-[#3a3a3e] text-base z-50
         bg-[#71D451]/20 drop-shadow-[0_0_6px_5px_rgba(0,0,0,0.05)] backdrop-blur-xl border-l-[10px] border-[#71D451]
 }
 /*error*/
