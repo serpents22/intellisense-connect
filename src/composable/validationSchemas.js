@@ -25,3 +25,8 @@ export const newPasswordSchema = yup.object({
   password_confirmation: yup.string()
     .oneOf([yup.ref('password'), null], 'Passwords must match')
 });
+
+export const newTypeSchema = yup.object({
+  name: yup.string().required().label('Type Name'),
+  fields: yup.string().required().label('Fields'),
+});

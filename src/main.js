@@ -7,7 +7,6 @@ import './index.css'
 import router from './router'
 import lottie from 'vue-lottie'
 import loading from '@/components/loading.vue'
-import modal from './components/modal/Modal.vue'
 import intellisenseTitle from './components/title.vue'
 import { defineAsyncComponent } from 'vue'
 
@@ -37,9 +36,8 @@ app.component('alert', defineAsyncComponent(() =>
 
 app
 .component('EasyDataTable', Vue3EasyDataTable)
-.component('modal', modal)
-.component('lottie', lottie)
 .component('loading', loading)
+.component('lottie', lottie)
 .component('intellisenseTitle', intellisenseTitle)
 .component('downloadCsv', JsonCSV)
 // .component('VueSlider', VueSlider)
