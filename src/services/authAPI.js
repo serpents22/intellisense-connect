@@ -7,13 +7,13 @@ const config = {
 }
 
 export default {
-  signIn(data) {
+  login(data) {
     return apiClient.post('login',data,config)
   },
-  signUp(data) {
+  register(data) {
     return apiClient.post('register',data,config)
   },
-  signOut() {
+  logout() {
     return apiClient.get('logout',config)
   },
   forgotPassword(data) {
