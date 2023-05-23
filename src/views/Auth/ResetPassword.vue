@@ -1,5 +1,4 @@
 <template>
-  <!-- <loading :loading="isLoading" /> -->
   <alert 
     :message ="status.message"
     :modalActive="modalActive"
@@ -25,9 +24,7 @@
 </template>
 
 <script setup>
-  import popupContent from '@/components/popups/popupContent.vue'
   import BaseInput from '@/components/input/BaseInput.vue'
-  import Modal from '@/components/modal/Modal.vue'
   import MyButton from '@/components/button/BaseButton.vue'
   import { Form as VeeForm, Field, ErrorMessage } from 'vee-validate'
   import { resetPasswordSchema } from '@/composable/validationSchemas'

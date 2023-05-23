@@ -8,10 +8,10 @@
   <div class="content">
     <div class="login-wrapper">
       <img src="@/assets/img/habitat-logo.png" id="logo" class="logo">
-      <h1 class="service-name">Loginssss</h1>
+      <h1 class="service-name">Login</h1>
       <VeeForm :validation-schema="schema" v-slot="{ handleSubmit }" as="div" class="w-full" >
-        <form  @submit="handleSubmit($event, onSubmit)" class="form-wrapper" >
-            <BaseInput name="username" type="text" placeholder="you@email.com" class="outlined" label="Email"/>
+        <form @submit="handleSubmit($event, onSubmit)" class="form-wrapper" >
+            <BaseInput name="email" type="text" placeholder="you@email.com" class="outlined" label="Email"/>
             <BaseInput name="password" type="password" placeholder="notyourbirthday" class="outlined" label="Password"/>
             <MyButton type="submit" class="filled__green" label="Login" :loading="isLoading" />
         </form>
@@ -38,7 +38,6 @@
   import { ref } from 'vue'
   import { storeToRefs } from 'pinia'
   import { loginSchema } from '@/composable/validationSchemas'
-import router from '@/router'
 
   const schema = loginSchema
  
@@ -49,7 +48,7 @@ import router from '@/router'
   const isError = ref(false)
 
   const onSubmit = async (values, { resetForm }) => {
-    await authStore.signIn(values)
+    await authStore.login(values)
     modalActive.value = true
     if (status.value.state == true) {
       isError.value = true

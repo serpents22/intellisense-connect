@@ -1,5 +1,4 @@
 <template>
-<!-- <loading :loading="isLoading" /> -->
   <alert 
     :message ="status.message"
     :modalActive="modalActive"

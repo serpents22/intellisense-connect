@@ -14,6 +14,7 @@ export const useAuthStore = defineStore('auth', {
     }),
     isLoading: ref(false)
   }),
+
   actions: {
     async signUp(data) {
       this.isLoading = true
@@ -33,18 +34,17 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async signIn(data) {
+    async login(data) {
       this.isLoading = true
       try {
-        const res = await authAPI.signIn(data)
+        const res = await authAPI.login(data)
+        console.log(res)
         this.isLoading = false
-        this.token = res.data.data.token.token;
+        localStorage.setItem('auth.token', res.data.data.token.token)
         this.status.message = 'Login Successful'
         this.status.code = res.data.status
         this.status.state = false
-        localStorage.setItem('auth.token', res.data.data.token.token)
-        localStorage.setItem('auth.user', res.data.data.user.first_name)
-        router.push({ name: 'Dashboard' });
+        router.push({ name: 'DevicesCategory' });
       } catch (err) {
         console.error(err)
         this.isLoading = false
