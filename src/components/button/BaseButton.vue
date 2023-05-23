@@ -103,14 +103,21 @@ button {
   @apply bg-[#A2ADB7]/70 
 }
 .filled__green {
-  @apply bg-[#38A680] rounded-md text-white p-2 cursor-pointer text-sm font-medium justify-center items-center text-center
+  @apply bg-[#38A680] rounded-md text-white p-2 cursor-pointer text-sm font-medium justify-center items-center text-center h-full
   transition-colors duration-300
 }
 
 .filled__green:hover {
   @apply bg-[#38A680]/70 
 }
+.outlined__green {
+  @apply border-solid border-2 border-[#38A680] rounded-md p-2 cursor-pointer text-sm font-medium justify-center items-center text-center
+  transition-colors duration-300 text-[#38A680] box-border
+}
 
+.outlined__green:hover {
+  @apply bg-[#38A680] text-[#FFFFFF]
+}
 
 .button--loading .button__text {
   visibility: hidden;
